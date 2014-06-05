@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/22 13:56:53 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/27 18:29:32 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/04 15:50:10 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 */
 # include "get_next_line.h"
 # include "libft.h"
+# include <sys/ioctl.h>
+# include <termcap.h>
+# include <termios.h>
 
 #include <stdio.h>
 
@@ -25,6 +28,7 @@
 ** define
 */
 # define BUILT_NUM 5
+# define KEY_NUM 7
 # define OPE_NUM 5
 
 /*
@@ -56,6 +60,15 @@ typedef struct			s_data
 	t_fd				*outfildes;
 }						t_data;
 
+typedef struct			s_copy
+{
+	char				*line;
+	int					index;
+	int					size;
+	struct s_copy		*down;
+	struct s_copy		*up;
+}						t_copy;
+
 typedef struct			s_env
 {
 	char				**env;
@@ -65,6 +78,12 @@ typedef struct			s_env
 	char				*home;
 }						t_env;
 
+typedef struct			s_hist
+{
+	char				**list;
+	t_copy				*copy;
+}						t_hist;
+
 typedef struct			s_id
 {
 	int					built;
@@ -72,6 +91,12 @@ typedef struct			s_id
 	pid_t				child;
 	pid_t				father;
 }						t_id;
+
+typedef struct			s_key
+{
+	char				*keyword;
+	void				(*apply_key)(void);
+}						t_key;
 
 typedef struct			s_node
 {
@@ -108,6 +133,26 @@ typedef struct			s_token
 ** global
 */
 t_id					g_pid;
+
+/*
+** aff_fct.c
+*/
+int						aff_c(int c);
+int						aff_str(char *str);
+
+/*
+** arrow_fct1.c
+*/
+void					apply_arrowleft(void);
+void					apply_arrowright(void);
+int						check_beginning(int index);
+int						check_ending(int index);
+
+/*
+** arrow_fct2.c
+*/
+void					apply_arrowdown(void);
+void					apply_arrowup(void);
 
 /*
 ** built_cd.c
@@ -149,11 +194,29 @@ char					*check_command(char *command);
 void					command_proc(char *command);
 
 /*
+** copy_fct.c
+*/
+t_copy					*add_to_copy(t_copy *copy, char *line);
+t_copy					*copy_historic(char **list);
+void					del_copy(t_copy **copy);
+
+/*
 ** data_fct.c
 */
 void					del_data(void);
 t_data					*init_data(void);
 void					update_data(t_data **data);
+
+/*
+** delete_fct.c
+*/
+void					apply_delete(void);
+void					display_line(void);
+
+/*
+** edit_fct.c
+*/
+void					apply_edit(char c);
 
 /*
 ** environ_fct.c
@@ -185,6 +248,13 @@ void					ft_errjoin(char *str1, char *str2);
 char					**ft_split(char *str);
 
 /*
+** historic_fct.c
+*/
+char					**add_to_list(char **list, char *line);
+t_hist					**init_historic(void);
+void					del_historic(void);
+
+/*
 ** lexer_fct.c
 */
 char					*tokenize_other(t_token **toklist, char *line);
@@ -200,8 +270,8 @@ t_env					*init_env(char **environ);
 /*
 ** minishell.c
 */
-int						av_size(char **av);
-void					del_av(char **av);
+void					del_keytab(void);
+t_key					*init_keytab(void);
 void					minishell(void);
 
 /*
@@ -257,6 +327,13 @@ void					write_redirfile(char *file);
 void					redirr_proc(t_node *tree);
 
 /*
+** return_fct.c
+*/
+void					apply_return(void);
+int						av_size(char **av);
+void					del_av(char **av);
+
+/*
 ** scolon_fct.c
 */
 void					scolon_proc(t_node *tree);
@@ -272,6 +349,11 @@ void					init_pid(void);
 */
 void					get_tmpfd(int *tmp_fd, char *tmp_file);
 void					remove_tmp(char *tmp_file);
+
+/*
+** term_fct.c
+*/
+void					apply_term(int set);
 
 /*
 ** toklist_fct.c

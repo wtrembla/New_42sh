@@ -5,70 +5,91 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/04/23 14:56:23 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/22 18:42:12 by wtrembla         ###   ########.fr       */
+/*   Created: 2014/06/03 18:32:08 by wtrembla          #+#    #+#             */
+/*   Updated: 2014/06/04 15:56:00 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-int		av_size(char **av)
+static t_key	init_key(char *keyword, void *apply_key)
 {
-	int		i;
+	t_key		key;
 
-	i = 0;
-	while (av && av[i])
-		i++;
-	return (i);
+	key.keyword = ft_strdup(keyword);
+	key.apply_key = apply_key;
+	return (key);
 }
 
-void	del_av(char **av)
+t_key			*init_keytab(void)
+{
+	static t_key	*key_tab = NULL;
+
+	if (!key_tab)
+	{
+		if (!(key_tab = (t_key *)malloc(sizeof(t_key) * KEY_NUM)))
+			ft_error("init_keytab: memory allocation failed");
+		key_tab[0] = init_key("\012", &apply_return);
+		key_tab[1] = init_key("\033[A", &apply_arrowup);
+		key_tab[2] = init_key("\033[B", &apply_arrowdown);
+		key_tab[3] = init_key("\033[D", &apply_arrowleft);
+		key_tab[4] = init_key("\033[C", &apply_arrowright);
+		key_tab[5] = init_key("\177", &apply_delete);
+		key_tab[6] = init_key("\033[3~", &apply_delete);
+//		key_tab[7] = init_key("\033\033[A", &apply_moveup);
+//		key_tab[8] = init_key("\033\033[B", &apply_movedown);
+//		key_tab[9] = init_key("\033\033[D", &apply_moveprev);
+//		key_tab[10] = init_key("\033\033[C", &apply_movenext);
+//		key_tab[11] = init_key("\033[H", &apply_movebegin);
+//		key_tab[12] = init_key("\033[F", &apply_moveend);
+	}
+	return (key_tab);
+}
+
+void			del_keytab(void)
 {
 	int		i;
+	t_key	*key_tab;
 
 	i = 0;
-	if (av)
+	key_tab = init_keytab();
+	if (key_tab)
 	{
-		while (av[i])
+		while (i < KEY_NUM)
 		{
-			ft_strdel(&av[i]);
+			ft_strdel(&(key_tab[i].keyword));
 			i++;
 		}
-		free(av);
-		av = NULL;
+		free(key_tab);
+		key_tab = NULL;
 	}
 }
 
-void	minishell(void)
+void			minishell(void)
 {
-	char	*line;
-	char	*trim;
-	t_node	*tree;
-	t_token	*toklist;
+	char		*buf;
+	int			i;
+	t_key		*key_tab;
 
-	tree = NULL;
-	toklist = NULL;
+	i = 0;
 	catch_signal();
-	while (get_next_line(0, &line))
+	buf = ft_strnew(7);
+	key_tab = init_keytab();
+	while (read(0, buf, 6))
 	{
-		init_pid();
-		trim = ft_strtrim(line);
-		if (trim && *trim)
+		while (i < KEY_NUM)
 		{
-			create_toklist(&toklist, trim);
-			if (parse_toklist(toklist))
+			if (!ft_strcmp(buf, key_tab[i].keyword))
 			{
-				organize_toklist(&tree, &toklist, 1, 0);
-//				print_tree(tree, 1);
-				read_tree(tree);
-				del_tree(&tree);
+				key_tab[i].apply_key();
+				break ;
 			}
-			del_toklist(&toklist);
+			i++;
 		}
-		else
-			ft_strdel(&trim);
-		ft_strdel(&line);
-		display_prompt();
+		if (ft_isprint(buf[0]))
+			apply_edit(buf[0]);
+		i = 0;
+		ft_bzero(buf, ft_strlen(buf));
 	}
 	apply_exit(NULL);
 }

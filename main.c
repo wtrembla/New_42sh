@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/22 13:56:17 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/22 13:45:57 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/04 15:37:40 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,17 @@ int			main(void)
 {
 	extern char		**environ;
 
+	if (tgetent(NULL, getenv("TERM")) < 1)
+		ft_error("42sh: improper environment");
 	init_pid();
 	init_builtin();
 	init_env(environ);
 	init_opetab();
 	init_proctab();
 	init_data();
+	init_historic();
+	init_keytab();
+	apply_term(1);
 	display_prompt();
 	minishell();
 	return (0);
