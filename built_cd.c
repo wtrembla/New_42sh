@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/24 15:29:45 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/13 17:46:54 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/17 18:44:21 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,29 @@
 
 static void		improper_path(int ret, char *path)
 {
-	t_stat	sb;
+	struct stat	sb;
 
 	lstat(path, &sb);
 	if (ret == -1)
-		ft_putjoin_fd("cd: no such file or directory: ", path, 2);
+		ft_error(ERROR(CD, E_NOEXISTENCE), path, 'n');
 	else if ((sb.st_mode & S_IFMT) != S_IFDIR)
-		ft_putjoin_fd("cd: not a directory: ", path, 2);
+		ft_error(ERROR(CD, E_NODIR), path, 'n');
 	else if (ret == -2)
-		ft_putjoin_fd("cd: permission denied: ", path, 2);
+		ft_error(ERROR(CD, E_NOACCES), path, 'n');
 }
 
-static void		update_env(t_env **env)
+static void		update_env(t_env **env, char *dir)
 {
 	char	buf[2048];
 	char	*new_dir;
 	char	*tmp;
 
+	set_option(env);
 	ft_strdel(&(*env)->oldpwd);
 	(*env)->oldpwd = (*env)->pwd;
 	new_dir = ft_strdup(getcwd(buf, 2048));
-	if (ft_strstr(new_dir, "/nfs/"))
-		(*env)->pwd = ft_strdup(ft_strstr(new_dir, "/nfs/"));
+	if ((*env)->optP == 0 && ft_strstr(new_dir, dir))
+		(*env)->pwd = ft_strdup(ft_strstr(new_dir, dir));
 	else
 		(*env)->pwd = ft_strdup(new_dir);
 	ft_strdel(&new_dir);
@@ -54,21 +55,31 @@ static void		update_env(t_env **env)
 	}
 }
 
-static void		go_backdir(t_env *env, char *av)
+static void		cd_proc(t_env *env, char *new_dir, char *av)
 {
 	int		ret;
 
-	if (!(ret = check_path(av)) && !chdir(av))
-		update_env(&env);
+	printf("new_dir = %s\n", new_dir);
+
+	if (new_dir && !(ret = check_path(new_dir)) && !chdir(new_dir))
+	{
+		if (av[0] == '/')
+			update_env(&env, new_dir);
+		else
+			update_env(&env, "/nfs");
+	}
 	if (ret)
+	{
 		improper_path(ret, av);
+		g_pid.built = 0;
+	}
+	set_flag(&env, 0);
 }
 
 static void		go_newdir(t_env *env, char *av)
 {
 	char	*new_dir;
 	char	*tmp;
-	int		ret;
 
 	if (!ft_strncmp(av, "./", 2))
 		new_dir = ft_strjoin(env->pwd, ft_strchr(av, '/'));
@@ -76,6 +87,8 @@ static void		go_newdir(t_env *env, char *av)
 		new_dir = ft_strdup(av);
 	else if (!ft_strcmp(av, "-"))
 		new_dir = ft_strdup(env->oldpwd);
+	else if (!ft_strncmp(av, "..", 2))
+		new_dir = ft_strdup(av);
 	else
 	{
 		tmp = env->pwd[ft_strlen(env->pwd) - 1] != '/' ?
@@ -83,10 +96,7 @@ static void		go_newdir(t_env *env, char *av)
 		new_dir = tmp != NULL ? ft_strjoin(tmp, av) : ft_strjoin(env->pwd, av);
 		ft_strdel(&tmp);
 	}
-	if (new_dir && !(ret = check_path(new_dir)) && !chdir(new_dir))
-		update_env(&env);
-	if (ret)
-		improper_path(ret, av);
+	cd_proc(env, new_dir, av);
 	ft_strdel(&new_dir);
 }
 
@@ -98,17 +108,22 @@ void			apply_cd(char *command)
 
 	av = ft_strsplit(command, ' ');
 	size = av_size(av);
-	env = init_env(NULL);
-	if (size > 2)
-		ft_putendl_fd("cd: syntax error", 2);
-	else if (size == 1 || (size == 2 && !ft_strcmp(av[1], "~")))
+	env = init_env(NULL, 0);
+	if (!parse_cd(av))
 	{
-		if (!chdir(env->home))
-			update_env(&env);
+		if (size == 1 || (size == 2 && !ft_strcmp(av[1], "-P"))
+			|| (size == 2 && !ft_strcmp(av[1], "-L"))
+			|| (size == 2 && !ft_strcmp(av[1], "~"))
+			|| (size == 3 && !ft_strcmp(av[2], "~")))
+		{
+			if (!chdir(env->home))
+				update_env(&env, "/nfs");
+			set_flag(&env, 0);
+		}
+		else
+			go_newdir(env, av[size - 1]);
+		if (g_pid.built == -1)
+			g_pid.built = 1;
 	}
-	else if (!ft_strncmp(av[1], "..", 2))
-		go_backdir(env, av[1]);
-	else
-		go_newdir(env, av[1]);
 	del_av(av);
 }

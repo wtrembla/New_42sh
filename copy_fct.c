@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/03 19:12:44 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/04 19:59:18 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/11 19:33:52 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,21 @@
 
 t_copy				*add_to_copy(t_copy *copy, char *line)
 {
-	t_copy  *elem;
-	t_copy  *tmp;
+	t_copy	*elem;
+	t_copy	*tmp;
 
 	tmp = copy;
 	if (!(elem = (t_copy *)malloc(sizeof(t_copy))))
-		ft_error("42sh: add_to_copy: memory allocation failed");
+		ft_error(ERROR(SH, E_MEMALLOC), "(creating historic copy)", 'n');
 	elem->line = ft_strdup(line);
 	elem->size = ft_strlen(line);
-	elem->index = line ? elem->size - 1 : - 1;
+	elem->index = line ? elem->size - 1 : -1;
 	elem->up = NULL;
 	elem->down = NULL;
 	if (copy)
 	{
 		while (tmp->down)
-			tmp  = tmp->down;
+			tmp = tmp->down;
 		tmp->down = elem;
 		tmp->down->up = tmp;
 	}
@@ -37,10 +37,10 @@ t_copy				*add_to_copy(t_copy *copy, char *line)
 	return (copy);
 }
 
-t_copy              *copy_historic(char **list)
+t_copy				*copy_historic(char **list)
 {
-	int         i;
-	t_copy      *copy;
+	int			i;
+	t_copy		*copy;
 
 	i = 0;
 	copy = NULL;
@@ -57,7 +57,7 @@ t_copy              *copy_historic(char **list)
 
 void				del_copy(t_copy **copy)
 {
-	t_copy  *tmp;
+	t_copy		*tmp;
 
 	while ((*copy)->up)
 		*copy = (*copy)->up;

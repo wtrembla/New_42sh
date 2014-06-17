@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/04 14:24:59 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/04 20:11:34 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/06 20:30:12 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static char		*update_line(char *line, int index, char c)
 
 	i = 0;
 	if (!(update = (char *)malloc(sizeof(char) * (ft_strlen(line) + 2))))
-		ft_putendl_fd("42sh: update_line: memory allocation failed", 2);
+		return (update);
 	else
 	{
 		while (line && line[i] && i < index)
@@ -47,14 +47,15 @@ void			apply_edit(char c)
 {
 	t_hist	**historic;
 
-	historic = init_historic();
+	historic = init_historic(0);
 	(*historic)->copy->line = update_line((*historic)->copy->line,
 											(*historic)->copy->index + 1, c);
 	tputs(tgetstr("im", NULL), 1, aff_c);
 	aff_c(c);
 	tputs(tgetstr("ei", NULL), 1, aff_c);
-	(*historic)->copy->size++;
-	(*historic)->copy->index++;
+	(*historic)->copy->size = ft_strlen((*historic)->copy->line);
+	(*historic)->copy->index = (*historic)->copy->size ?
+		(*historic)->copy->index + 1 : -1;
 	display_line();
 	if (check_ending((*historic)->copy->index))
 	{

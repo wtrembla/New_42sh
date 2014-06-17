@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/22 13:56:53 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/04 15:50:10 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/17 18:05:13 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,21 @@
 /*
 ** include
 */
+# include "errors.h"
 # include "get_next_line.h"
 # include "libft.h"
 # include <sys/ioctl.h>
 # include <termcap.h>
 # include <termios.h>
 
-#include <stdio.h>
+# include <stdio.h>
 
 /*
 ** define
 */
 # define BUILT_NUM 5
-# define KEY_NUM 7
-# define OPE_NUM 5
+# define KEY_NUM 14
+# define OPE_NUM 7
 
 /*
 ** typedef
@@ -76,6 +77,8 @@ typedef struct			s_env
 	char				*pwd;
 	char				*oldpwd;
 	char				*home;
+	int					flagP;
+	int					optP;
 }						t_env;
 
 typedef struct			s_hist
@@ -119,8 +122,6 @@ typedef struct			s_proc
 	void				(*apply_proc)(t_node *);
 }						t_proc;
 
-typedef struct stat		t_stat;
-
 typedef struct			s_token
 {
 	char				*type;
@@ -141,6 +142,11 @@ int						aff_c(int c);
 int						aff_str(char *str);
 
 /*
+** and_fct.c
+*/
+void					and_proc(t_node *tree);
+
+/*
 ** arrow_fct1.c
 */
 void					apply_arrowleft(void);
@@ -153,6 +159,8 @@ int						check_ending(int index);
 */
 void					apply_arrowdown(void);
 void					apply_arrowup(void);
+void					aff_line(void);
+void					clear_aff(void);
 
 /*
 ** built_cd.c
@@ -185,7 +193,7 @@ void					apply_unsetenv(char *command);
 */
 int						check_builtin(char *command);
 void					del_builtin(void);
-t_built					*init_builtin(void);
+t_built					*init_builtin(int set);
 
 /*
 ** command_fct.c
@@ -204,7 +212,7 @@ void					del_copy(t_copy **copy);
 ** data_fct.c
 */
 void					del_data(void);
-t_data					*init_data(void);
+t_data					*init_data(int set);
 void					update_data(t_data **data);
 
 /*
@@ -228,6 +236,11 @@ char					**copy_path(char **environ);
 char					*copy_pwd(char **environ);
 
 /*
+** eof_fct.c
+*/
+void					apply_eof(void);
+
+/*
 ** exec_fct.c
 */
 void					exec_command(char **av, int fd_out);
@@ -235,12 +248,7 @@ void					exec_command(char **av, int fd_out);
 /*
 ** ft_error.c
 */
-void					ft_error(char *str);
-
-/*
-** ft_errjoin.fr
-*/
-void					ft_errjoin(char *str1, char *str2);
+void					ft_error(char *str1, char *str2, char order);
 
 /*
 ** ft_split.c
@@ -251,7 +259,7 @@ char					**ft_split(char *str);
 ** historic_fct.c
 */
 char					**add_to_list(char **list, char *line);
-t_hist					**init_historic(void);
+t_hist					**init_historic(int set);
 void					del_historic(void);
 
 /*
@@ -265,14 +273,32 @@ char					*tokenize_redir(t_token **toklist, char *line);
 */
 void					del_env(void);
 void					display_prompt(void);
-t_env					*init_env(char **environ);
+t_env					*init_env(char **environ, int set);
 
 /*
 ** minishell.c
 */
 void					del_keytab(void);
-t_key					*init_keytab(void);
+t_key					*init_keytab(int set);
 void					minishell(void);
+
+/*
+** move_fct1.c
+*/
+void					apply_moveleft(void);
+void					apply_moveright(void);
+
+/*
+** move_fct2.c
+*/
+void					apply_moveup(void);
+void					apply_movedown(void);
+
+/*
+** move_fct3.c
+*/
+void					apply_moveend(void);
+void					apply_movebegin(void);
 
 /*
 ** operand_fct.c
@@ -280,7 +306,19 @@ void					minishell(void);
 t_ope					check_operand(char *type);
 void					del_opetab(void);
 t_ope					init_operand(int prio, char *name);
-t_ope					*init_opetab(void);
+t_ope					*init_opetab(int set);
+
+/*
+** opt_cd.c
+*/
+int						parse_cd(char **av);
+void					set_flag(t_env **env, int set);
+void					set_option(t_env **env);
+
+/*
+** or_fct.c
+*/
+void					or_proc(t_node *tree);
 
 /*
 ** path_fct.c
@@ -289,7 +327,7 @@ char					*build_path(char *path, char *command);
 int						check_path(char *path);
 
 /*
-** parse_fct.c
+** parser_fct.c
 */
 int						parse_toklist(t_token *toklist);
 
@@ -304,7 +342,7 @@ void					write_pipefile(void);
 ** process_fct.c
 */
 void					del_proctab(void);
-t_proc					*init_proctab(void);
+t_proc					*init_proctab(int set);
 void					read_tree(t_node *tree);
 
 /*
@@ -319,7 +357,7 @@ void					write_redilfile(void);
 */
 void					add_outfildes(t_fd **outfildes, char *file, int fd);
 void					redir_proc(t_node *tree);
-void					write_redirfile(char *file);
+void					write_redirfile(int fd);
 
 /*
 ** redirr_fct.c

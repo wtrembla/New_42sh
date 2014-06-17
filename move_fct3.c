@@ -1,41 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   built_exit.c                                       :+:      :+:    :+:   */
+/*   move_fct3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/04/24 16:29:08 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/11 18:35:54 by wtrembla         ###   ########.fr       */
+/*   Created: 2014/06/06 17:06:34 by wtrembla          #+#    #+#             */
+/*   Updated: 2014/06/06 20:30:58 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-void	apply_exit(char *command)
+void	apply_moveend(void)
 {
-	char	**av;
-	int		ret;
-	int		size;
+	clear_aff();
+	aff_line();
+}
 
-	av = ft_split(command);
-	ret = 0;
-	if ((size = av_size(av)) > 2)
+void	apply_movebegin(void)
+{
+	struct winsize	size;
+	t_hist			**historic;
+
+	ioctl(0, TIOCGWINSZ, &size);
+	historic = init_historic(0);
+	while ((*historic)->copy->index + 3 >= size.ws_col)
+		apply_moveup();
+	if ((*historic)->copy->index != -1)
 	{
-		ft_error(ERROR(EXIT, E_MANYARGS), NULL, 'n');
-		g_pid.built = 0;
-		return ;
+		tputs(tgoto(tgetstr("ch", NULL), 0, 2), 1, aff_c);
+		(*historic)->copy->index = -1;
 	}
-	else if (size == 1 && av[1])
-		ret = ft_atoi(av[1]);
-	del_builtin();
-	del_env();
-	del_opetab();
-	del_proctab();
-	del_data();
-	del_historic();
-	del_keytab();
-	del_av(av);
-	apply_term(-1);
-	exit(ret);
 }

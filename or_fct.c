@@ -1,41 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   built_exit.c                                       :+:      :+:    :+:   */
+/*   or_fct.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/04/24 16:29:08 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/11 18:35:54 by wtrembla         ###   ########.fr       */
+/*   Created: 2014/06/11 17:04:06 by wtrembla          #+#    #+#             */
+/*   Updated: 2014/06/13 17:17:38 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-void	apply_exit(char *command)
+void	or_proc(t_node *tree)
 {
-	char	**av;
-	int		ret;
-	int		size;
-
-	av = ft_split(command);
-	ret = 0;
-	if ((size = av_size(av)) > 2)
+	read_tree(tree->left);
+	if (WIFSIGNALED(g_pid.id) || g_pid.built == 0)
 	{
-		ft_error(ERROR(EXIT, E_MANYARGS), NULL, 'n');
-		g_pid.built = 0;
-		return ;
+		init_pid();
+		read_tree(tree->right);
 	}
-	else if (size == 1 && av[1])
-		ret = ft_atoi(av[1]);
-	del_builtin();
-	del_env();
-	del_opetab();
-	del_proctab();
-	del_data();
-	del_historic();
-	del_keytab();
-	del_av(av);
-	apply_term(-1);
-	exit(ret);
+	else if (g_pid.father != 0)
+	{
+		init_pid();
+		if (WIFEXITED(g_pid.id) && WEXITSTATUS(g_pid.id) > 0)
+			read_tree(tree->right);
+	}
+	init_pid();
 }

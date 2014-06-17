@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/03 19:35:50 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/04 16:35:59 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/11 19:32:42 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		check_ending(int index)
 {
-	struct winsize  size;
+	struct winsize	size;
 
 	ioctl(0, TIOCGWINSZ, &size);
 	if (((index + 3) % (size.ws_col)) == 0)
@@ -25,10 +25,10 @@ int		check_ending(int index)
 
 int		check_beginning(int index)
 {
-	struct winsize  size;
+	struct winsize	size;
 
 	ioctl(0, TIOCGWINSZ, &size);
-	if ((index + 3 % size.ws_col) == size.ws_col - 1)
+	if (((index + 3) % (size.ws_col)) == size.ws_col - 1)
 		return (size.ws_col);
 	else
 		return (0);
@@ -38,7 +38,7 @@ void	apply_arrowright(void)
 {
 	t_hist	**historic;
 
-	historic = init_historic();
+	historic = init_historic(0);
 	if ((*historic)->copy->index < (*historic)->copy->size - 1)
 	{
 		(*historic)->copy->index += 1;
@@ -56,7 +56,7 @@ void	apply_arrowleft(void)
 	int		win_size;
 	t_hist	**historic;
 
-	historic = init_historic();
+	historic = init_historic(0);
 	if ((*historic)->copy->index > -1)
 	{
 		(*historic)->copy->index -= 1;

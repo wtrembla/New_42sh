@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/11 21:11:34 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/21 18:39:36 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/06 20:05:13 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char			**ft_split(char *str)
 	i = 0;
 	j = 0;
 	if (!(split = (char **)malloc(sizeof(char *) * (count_words(str) + 1))))
-		ft_error("ft_split: memory allocation failed");
+		return (split);
 	while (str && str[i])
 	{
 		while (*str && (*str == ' ' || *str == '\t'))

@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/03 18:32:08 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/04 15:56:00 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/10 16:55:51 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,14 @@ static t_key	init_key(char *keyword, void *apply_key)
 	return (key);
 }
 
-t_key			*init_keytab(void)
+t_key			*init_keytab(int set)
 {
 	static t_key	*key_tab = NULL;
 
-	if (!key_tab)
+	if (!key_tab && set == 1)
 	{
 		if (!(key_tab = (t_key *)malloc(sizeof(t_key) * KEY_NUM)))
-			ft_error("init_keytab: memory allocation failed");
+			ft_error(ERROR(SH, E_MEMALLOC), "(initializing keytab)", 'y');
 		key_tab[0] = init_key("\012", &apply_return);
 		key_tab[1] = init_key("\033[A", &apply_arrowup);
 		key_tab[2] = init_key("\033[B", &apply_arrowdown);
@@ -36,12 +36,13 @@ t_key			*init_keytab(void)
 		key_tab[4] = init_key("\033[C", &apply_arrowright);
 		key_tab[5] = init_key("\177", &apply_delete);
 		key_tab[6] = init_key("\033[3~", &apply_delete);
-//		key_tab[7] = init_key("\033\033[A", &apply_moveup);
-//		key_tab[8] = init_key("\033\033[B", &apply_movedown);
-//		key_tab[9] = init_key("\033\033[D", &apply_moveprev);
-//		key_tab[10] = init_key("\033\033[C", &apply_movenext);
-//		key_tab[11] = init_key("\033[H", &apply_movebegin);
-//		key_tab[12] = init_key("\033[F", &apply_moveend);
+		key_tab[7] = init_key("\033\033[A", &apply_moveup);
+		key_tab[8] = init_key("\033\033[B", &apply_movedown);
+		key_tab[9] = init_key("\033\033[D", &apply_moveleft);
+		key_tab[10] = init_key("\033\033[C", &apply_moveright);
+		key_tab[11] = init_key("\033[H", &apply_movebegin);
+		key_tab[12] = init_key("\033[F", &apply_moveend);
+		key_tab[13] = init_key("\004", &apply_eof);
 	}
 	return (key_tab);
 }
@@ -52,7 +53,7 @@ void			del_keytab(void)
 	t_key	*key_tab;
 
 	i = 0;
-	key_tab = init_keytab();
+	key_tab = init_keytab(0);
 	if (key_tab)
 	{
 		while (i < KEY_NUM)
@@ -74,7 +75,7 @@ void			minishell(void)
 	i = 0;
 	catch_signal();
 	buf = ft_strnew(7);
-	key_tab = init_keytab();
+	key_tab = init_keytab(0);
 	while (read(0, buf, 6))
 	{
 		while (i < KEY_NUM)
@@ -91,5 +92,4 @@ void			minishell(void)
 		i = 0;
 		ft_bzero(buf, ft_strlen(buf));
 	}
-	apply_exit(NULL);
 }

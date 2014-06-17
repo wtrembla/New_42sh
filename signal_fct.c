@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/24 17:13:48 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/13 17:50:09 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/13 17:43:57 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ static void		handle_signal(int sig)
 {
 	if (g_pid.father || g_pid.child)
 	{
-		ft_putstr("\b\b");
 		if (g_pid.father)
 			kill(sig, g_pid.father);
 		if (g_pid.child)
@@ -27,12 +26,11 @@ static void		handle_signal(int sig)
 	{
 		if (sig == SIGINT)
 		{
-			ft_putstr("\b\b  ");
 			ft_putchar('\n');
 			display_prompt();
 		}
 		else
-			signal(sig, SIG_DFL);
+			signal(sig, SIG_IGN);
 	}
 }
 
@@ -51,7 +49,10 @@ void			catch_signal(void)
 	i = 0;
 	while (i < 33)
 	{
-		signal(i, handle_signal);
+		if (i == 2)
+			signal(i, handle_signal);
+		else
+			signal(i, SIG_IGN);
 		i++;
 	}
 }

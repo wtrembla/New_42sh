@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/23 19:10:27 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/13 17:47:40 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/11 18:28:32 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int		var_isvalid(char *var)
 {
 	if (ft_strchr(var, '='))
 	{
-		ft_putendl_fd("setenv: syntax error", 2);
+		ft_error(ERROR(SETENV, E_SYNTAX), NULL, 'n');
 		return (0);
 	}
 	return (1);
@@ -35,7 +35,7 @@ static void		add_var(char **av, t_env **env)
 		i++;
 	if (!(senv = (char **)malloc(sizeof(char *) * (i + 2))))
 	{
-		ft_putendl_fd("add_var: memory allocation failed", 2);
+		ft_error(ERROR(SETENV, E_MEMALLOC), "(adding variable)", 'n');
 		return ;
 	}
 	while ((*env)->env && (*env)->env[j])
@@ -79,15 +79,20 @@ void			apply_setenv(char *command)
 
 	av = ft_strsplit(command, ' ');
 	size = av_size(av);
-	env = init_env(NULL);
+	env = init_env(NULL, 0);
 	if (size == 1)
 		apply_env(command);
 	else if (size > 3)
-		ft_putendl_fd("setenv: too many arguments", 2);
+		ft_error(ERROR(SETENV, E_MANYARGS), NULL, 'n');
 	else
 	{
 		if (var_isvalid(av[1]) && !(update_var(&env, av[1], av[2])))
+		{
 			add_var(av, &env);
+			g_pid.built = 1;
+		}
 	}
+	if (g_pid.built == -1)
+		g_pid.built = 0;
 	del_av(av);
 }

@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/23 18:26:55 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/13 17:48:11 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/06 20:22:40 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,14 @@ static t_built	init_built(char *name, void *apply_built)
 	return (built);
 }
 
-t_built			*init_builtin(void)
+t_built			*init_builtin(int set)
 {
 	static t_built	*builtin = NULL;
 
-	if (!builtin)
+	if (!builtin && set == 1)
 	{
 		if (!(builtin = (t_built *)malloc(sizeof(t_built) * BUILT_NUM)))
-			ft_error("init_builtin: memory allocation failed");
+			ft_error(ERROR(SH, E_MEMALLOC), "(initializing builtins)", 'y');
 		builtin[0] = init_built("cd", &apply_cd);
 		builtin[1] = init_built("env", &apply_env);
 		builtin[2] = init_built("exit", &apply_exit);
@@ -48,7 +48,7 @@ int				check_builtin(char *command)
 	i = 0;
 	ret = 0;
 	av = ft_strsplit(command, ' ');
-	builtin = init_builtin();
+	builtin = init_builtin(0);
 	while (i < BUILT_NUM)
 	{
 		if (!ft_strcmp(av[0], builtin[i].name))
@@ -68,7 +68,7 @@ void			del_builtin(void)
 	t_built		*builtin;
 
 	i = 0;
-	builtin = init_builtin();
+	builtin = init_builtin(0);
 	if (builtin)
 	{
 		while (i < BUILT_NUM)

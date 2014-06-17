@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/03 17:03:39 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/04 20:12:38 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/11 19:26:27 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char			**add_to_list(char **list, char *line)
 	while (list && list[i])
 		i++;
 	if (!(update = (char **)malloc(sizeof(char *) * (i + 2))))
-		ft_error("add_to_list: memory allocation failed");
+		ft_error(ERROR(SH, E_MEMALLOC), "(creating history list)", 'y');
 	while (list && list[j])
 	{
 		update[j] = ft_strdup(list[j]);
@@ -36,20 +36,20 @@ char			**add_to_list(char **list, char *line)
 	return (update);
 }
 
-t_hist			**init_historic(void)
+t_hist			**init_historic(int set)
 {
 	char			*line;
 	char			*path;
 	int				fd;
 	static t_hist	*historic = NULL;
 
-	if (!historic)
+	if (!historic && set == 1)
 	{
 		if (!(historic = (t_hist *)malloc(sizeof(t_hist))))
-			ft_error("42sh: init_historic: memory allocation failed");
-		path = ft_strjoin(init_env(NULL)->home, "/.42sh_history");
-		if ((fd = open(path, O_RDONLY | O_CREAT, 0644)) == -1)
-			ft_error("42sh: init_historic: open error: .42sh_history");
+			ft_error(ERROR(SH, E_MEMALLOC), "(initializing historic)", 'y');
+		path = ft_strjoin(init_env(NULL, 0)->home, "/.42sh_history");
+		if ((fd = open(path, O_RDONLY | O_CREAT | O_TRUNC, 0644)) == -1)
+			ft_error(ERROR(SH, E_OPEN), ".42sh_history", 'y');
 		historic->list = NULL;
 		while (get_next_line(fd, &line) > 0)
 		{
@@ -58,7 +58,7 @@ t_hist			**init_historic(void)
 		}
 		historic->copy = copy_historic(historic->list);
 		if (close(fd) == -1)
-			ft_error("42sh: init_historic: close error: .42sh_historic");
+			ft_error(ERROR(SH, E_CLOSE), ".42sh_history", 'y');
 		ft_strdel(&path);
 	}
 	return (&historic);
@@ -68,7 +68,10 @@ void			del_historic(void)
 {
 	t_hist	**historic;
 
-	historic = init_historic();
-	del_av((*historic)->list);
-	del_copy(&(*historic)->copy);
+	historic = init_historic(0);
+	if (*historic)
+	{
+		del_av((*historic)->list);
+		del_copy(&(*historic)->copy);
+	}
 }

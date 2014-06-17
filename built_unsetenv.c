@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/24 15:06:42 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/13 17:47:56 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/11 18:32:36 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,11 @@ static int		var_isvalid(char *av, char **env)
 	int		i;
 
 	i = 0;
-	if (ft_strchr(av, '='))
-		ft_putendl_fd("unsetenv: syntax error", 2);
-	else
+	while (env && env[i])
 	{
-		while (env && env[i])
-		{
-			if (!ft_strncmp(av, env[i], ft_strlen(av)))
-				return (1);
-			i++;
-		}
-		ft_putjoin_fd("unsetenv: variable does not exist ", av, 2);
+		if (!ft_strncmp(av, env[i], ft_strlen(av)))
+			return (1);
+		i++;
 	}
 	return (0);
 }
@@ -44,7 +38,7 @@ static void		del_var(char *av, t_env **env)
 		i++;
 	if (!(uenv = (char **)malloc(sizeof(char *) * i)))
 	{
-		ft_putendl_fd("del_var: memory allocation failed", 2);
+		ft_error(ERROR(UNSETENV, E_MEMALLOC), "(deleting variable)", 'n');
 		return ;
 	}
 	while ((*env)->env && (*env)->env[++j]
@@ -70,9 +64,9 @@ void			apply_unsetenv(char *command)
 	i = 1;
 	av = ft_strsplit(command, ' ');
 	size = av_size(av);
-	env = init_env(NULL);
+	env = init_env(NULL, 0);
 	if (size < 2)
-		ft_putendl_fd("unsetenv: too few arguments", 2);
+		ft_error(ERROR(UNSETENV, E_FEWARGS), NULL, 'n');
 	else
 	{
 		while (i < size)
@@ -81,6 +75,9 @@ void			apply_unsetenv(char *command)
 				del_var(av[i], &env);
 			i++;
 		}
+		g_pid.built = 1;
 	}
+	if (g_pid.built == -1)
+		g_pid.built = 0;
 	del_av(av);
 }

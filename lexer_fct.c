@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:49:44 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/20 20:00:38 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/10 17:22:38 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static char		*reorganize_line(char *line, int i, int j)
 	k = 0;
 	if (!(new_line = (char *)malloc(sizeof(char)
 									* (ft_strlen(line) - (j - i) + 1))))
-		ft_error("reorganize_line: memory allocation failed");
+		ft_error(ERROR(SH, E_MEMALLOC), "(lexing line)", 'n');
 	while (k < i)
 	{
 		new_line[k] = line[k];
@@ -43,7 +43,7 @@ static void		add_token(t_token **toklist, char *type, char *word, int prio)
 	t_token	*tmp;
 
 	if (!(elem = (t_token *)malloc(sizeof(t_token))))
-		ft_error("add_token: memory allocation failed");
+		ft_error(ERROR(SH, E_MEMALLOC), "(adding token)", 'n');
 	elem->type = ft_strdup(type);
 	elem->word = ft_strdup(word);
 	elem->prio = prio;
@@ -85,6 +85,7 @@ char			*tokenize_redir(t_token **toklist, char *line)
 
 char			*tokenize_other(t_token **toklist, char *line)
 {
+	char	*ndup;
 	char	*word;
 	char	*new_line;
 	int		i;
@@ -93,7 +94,9 @@ char			*tokenize_other(t_token **toklist, char *line)
 	i = 0;
 	while (line[i] && !(operand = check_operand(line + i)).name)
 		i++;
-	word = ft_strndup(line, i);
+	ndup = ft_strndup(line, i);
+	word = ft_strtrim(ndup);
+	ft_strdel(&ndup);
 	if (word && *word)
 		add_token(toklist, "com", word, -1);
 	ft_strdel(&word);

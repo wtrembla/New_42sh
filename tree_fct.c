@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/02/25 18:00:43 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/23 16:28:42 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/06 19:44:15 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ t_node			*new_node(char *type, char *word, int pos)
 	tmp1 = ft_strtrim(type);
 	tmp2 = ft_strtrim(word);
 	if (!(elem = (t_node *)malloc(sizeof(t_node))))
-		ft_error("new_node: memory allocation failed");
+	{
+		ft_error(ERROR(SH, E_MEMALLOC), "(adding node)", 'n');
+		return (NULL);
+	}
 	elem->type = ft_strdup(tmp1);
 	elem->word = ft_strdup(tmp2);
 	elem->pos = pos;

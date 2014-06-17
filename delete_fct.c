@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/03 20:00:33 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/04 20:11:15 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/11 19:34:56 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,22 @@ void			display_line(void)
 {
 	t_hist	**historic;
 
-	historic = init_historic();
+	historic = init_historic(0);
 	tputs(tgetstr("cd", NULL), 1, aff_c);
-    tputs(tgetstr("sc", NULL), 1, aff_c);
-    aff_str((*historic)->copy->line + (*historic)->copy->index + 1);
-    tputs(tgetstr("rc", NULL), 1, aff_c);
+	tputs(tgetstr("sc", NULL), 1, aff_c);
+	aff_str((*historic)->copy->line + (*historic)->copy->index + 1);
+	tputs(tgetstr("rc", NULL), 1, aff_c);
 }
 
 static char		*update_line(char *line, int index)
 {
-	char 	*update;
+	char	*update;
 	int		i;
 	int		j;
 
 	i = 0;
 	if (!(update = (char *)malloc(sizeof(char) * ft_strlen(line))))
-		ft_putendl_fd("42sh: update_line: memory allocation failed", 2);
+		return (update);
 	else
 	{
 		while (line && line[i] && i < index)
@@ -58,7 +58,7 @@ void			apply_delete(void)
 	int		win_size;
 	t_hist	**historic;
 
-	historic = init_historic();
+	historic = init_historic(0);
 	if ((*historic)->copy->index != -1)
 	{
 		(*historic)->copy->line = update_line((*historic)->copy->line,
@@ -72,7 +72,7 @@ void			apply_delete(void)
 			tputs(tgetstr("le", NULL), 1, aff_c);
 		tputs(tgetstr("dc", NULL), 1, aff_c);
 		(*historic)->copy->index -= 1;
-		(*historic)->copy->size -= 1;
+		(*historic)->copy->size -= ft_strlen((*historic)->copy->line);
 		display_line();
 	}
 }

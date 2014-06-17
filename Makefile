@@ -6,7 +6,7 @@
 #    By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2013/12/13 18:51:49 by wtrembla          #+#    #+#              #
-#    Updated: 2014/06/04 15:45:59 by wtrembla         ###   ########.fr        #
+#    Updated: 2014/06/17 17:07:32 by wtrembla         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -14,6 +14,7 @@ CC			=	gcc
 NAME		=	42sh
 
 SRCS		=	aff_fct.c				\
+				and_fct.c				\
 				arrow_fct1.c			\
 				arrow_fct2.c			\
 				built_cd.c				\
@@ -28,18 +29,23 @@ SRCS		=	aff_fct.c				\
 				delete_fct.c			\
 				edit_fct.c				\
 				environ_fct.c			\
+				eof_fct.c				\
 				exec_fct.c				\
 				ft_error.c				\
-				ft_errjoin.c			\
 				ft_split.c				\
 				get_next_line.c			\
 				historic_fct.c			\
 				lexer_fct.c				\
 				main.c					\
 				minishell.c				\
+				move_fct1.c				\
+				move_fct2.c				\
+				move_fct3.c				\
 				operand_fct.c			\
+				opt_cd.c				\
+				or_fct.c				\
 				path_fct.c				\
-				parse_fct.c				\
+				parser_fct.c			\
 				pipe_fct.c				\
 				process_fct.c			\
 				redil_fct.c				\

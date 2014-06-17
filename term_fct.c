@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/04 15:15:43 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/04 15:37:27 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/11 19:38:16 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	apply_term(int set)
 {
-	struct termios  term;
+	struct termios	term;
 
 	if (set == 1)
 	{

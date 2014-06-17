@@ -6,42 +6,42 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/15 20:01:14 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/27 14:36:43 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/13 18:58:20 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
 #include "ft_minishell.h"
+#include <sys/stat.h>
 
 static int		check_file(char *file)
 {
-	int		fd;
+	int				fd;
+	struct stat		sb;
 
 	fd = -1;
-	if (!access(file, F_OK) && access(file, W_OK) == -1)
-		ft_putjoin_fd("42sh: permission denied: ", file, 2);
+	lstat(file, &sb);
+	if (!access(file, F_OK) && (sb.st_mode & S_IFMT) == S_IFDIR)
+		ft_error(ERROR(SH, E_ISDIR), file, 'n');
+	else if (!access(file, F_OK) && access(file, W_OK) == -1)
+		ft_error(ERROR(SH, E_NOACCESS), file, 'n');
 	else if ((fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644)) == -1)
-		ft_putjoin_fd("42sh: check_file: open error: ", file, 2);
+		ft_error(ERROR(SH, E_OPEN), file, 'n');
 	return (fd);
 }
 
-void			write_redirfile(char *file)
+void			write_redirfile(int fd)
 {
 	char	*line;
-	int		fd;
 	t_data	*data;
 
-	data = init_data();
+	data = init_data(0);
 	lseek(data->tmp_fdout, 0, SEEK_SET);
-	if ((fd = open(file, O_WRONLY | O_TRUNC)) == -1)
-		ft_putendl_fd("Erreur1", 2);
 	while (get_next_line(data->tmp_fdout, &line) > 0)
 	{
 		ft_putendl_fd(line, fd);
 		ft_strdel(&line);
 	}
-	if (close(fd) == -1)
-		ft_putendl_fd("Erreur2", 2);
 }
 
 void			add_outfildes(t_fd **outfildes, char *file, int fd)
@@ -50,19 +50,22 @@ void			add_outfildes(t_fd **outfildes, char *file, int fd)
 	t_fd	*tmp;
 
 	if (!(elem = (t_fd *)malloc(sizeof(t_fd))))
-		ft_error("add_fd: memory allocation failed");
-	elem->file = ft_strdup(file);
-	elem->fildes = fd;
-	elem->next = NULL;
-	tmp = *outfildes;
-	if (*outfildes)
-	{
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = elem;
-	}
+		ft_error(ERROR(SH, E_MEMALLOC), "(adding outfile)", 'n');
 	else
-		*outfildes = elem;
+	{
+		elem->file = ft_strdup(file);
+		elem->fildes = fd;
+		elem->next = NULL;
+		tmp = *outfildes;
+		if (*outfildes)
+		{
+			while (tmp->next)
+				tmp = tmp->next;
+			tmp->next = elem;
+		}
+		else
+			*outfildes = elem;
+	}
 }
 
 void			redir_proc(t_node *tree)
@@ -72,7 +75,7 @@ void			redir_proc(t_node *tree)
 	t_data	*data;
 
 	file = ft_strtrim(tree->left->word);
-	data = init_data();
+	data = init_data(0);
 	if (data->tmp_fdout == -1)
 		get_tmpfd(&data->tmp_fdout, "/.temp_out");
 	if (data->tmp_fdout != -1 && (fd = check_file(file)) != -1)
@@ -81,6 +84,9 @@ void			redir_proc(t_node *tree)
 		read_tree(tree->right);
 	}
 	else
+	{
 		update_data(&data);
+		g_pid.built = 0;
+	}
 	ft_strdel(&file);
 }

@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/23 16:49:22 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/13 17:48:43 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/06 19:55:39 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	**copy_env(char **environ)
 	while (environ && environ[i])
 		i++;
 	if (!(env = (char **)malloc(sizeof(char *) * (i + 1))))
-		ft_error("copy_env: memory allocation failed");
+		ft_error(ERROR(SH, E_MEMALLOC), "(copying env)", 'y');
 	while (environ && environ[j])
 	{
 		env[j] = ft_strdup(environ[j]);
@@ -46,7 +46,7 @@ char	**copy_path(char **environ)
 	if (environ && environ[i])
 		path = ft_strsplit(environ[i] + 5, ':');
 	if (!path)
-		ft_error("copy_path: variable PATH not found");
+		ft_error(ERROR(SH, E_IMPENV), NULL, 'y');
 	return (path);
 }
 
@@ -62,7 +62,7 @@ char	*copy_oldpwd(char **environ)
 	if (environ && environ[i])
 		oldpwd = ft_strdup(environ[i] + 7);
 	if (!oldpwd)
-		ft_error("copy_oldpwd: variable OLDPWD not found");
+		ft_error(ERROR(SH, E_IMPENV), NULL, 'y');
 	return (oldpwd);
 }
 
@@ -78,7 +78,7 @@ char	*copy_pwd(char **environ)
 	if (environ && environ[i])
 		pwd = ft_strdup(environ[i] + 4);
 	if (!pwd)
-		ft_error("copy_pwd: variable PWD not found");
+		ft_error(ERROR(SH, E_IMPENV), NULL, 'y');
 	return (pwd);
 }
 
@@ -94,6 +94,6 @@ char	*copy_home(char **environ)
 	if (environ && environ[i])
 		home = ft_strdup(environ[i] + 5);
 	if (!home)
-		ft_error("copy_home: varaible HOME not found");
+		ft_error(ERROR(SH, E_IMPENV), NULL, 'y');
 	return (home);
 }

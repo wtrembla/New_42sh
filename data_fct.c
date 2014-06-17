@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/15 20:51:58 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/27 15:26:01 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/06 20:26:06 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ static void		close_fildes(t_fd *fildes)
 		while (tmp)
 		{
 			if (close(tmp->fildes) == -1)
-				ft_putjoin_fd("42sh: close fildes: close error: "
-								, tmp->file, 2);
+				ft_error(ERROR(SH, E_CLOSE), tmp->file, 'n');
 			tmp = tmp->next;
 		}
 	}
@@ -45,8 +44,7 @@ void			update_data(t_data **data)
 	if ((*data)->tmp_fdin != -1)
 	{
 		if (close((*data)->tmp_fdin) == -1)
-			ft_putendl_fd("42sh: update_data: close error on temporary file"
-							, 2);
+			ft_error(ERROR(SH, E_CLOSE), "temporary infile", 'n');
 		close_fildes((*data)->infildes);
 		remove_tmp("/.temp_in");
 		del_fildes(&((*data)->infildes));
@@ -54,29 +52,24 @@ void			update_data(t_data **data)
 	if ((*data)->tmp_fdout != -1)
 	{
 		if (close((*data)->tmp_fdout) == -1)
-			ft_putendl_fd("42sh: update_data: close error on temporary file"
-							, 2);
+			ft_error(ERROR(SH, E_CLOSE), "temporary outfile", 'n');
 		close_fildes((*data)->outfildes);
 		remove_tmp("/.temp_out");
 		del_fildes(&((*data)->outfildes));
 	}
-//	(*data)->in_pipe = -1;
-//	(*data)->out_pipe = -1;
 	(*data)->tmp_fdin = -1;
 	(*data)->tmp_fdout = -1;
 }
 
-t_data			*init_data(void)
+t_data			*init_data(int set)
 {
 	static t_data	*data = NULL;
 
-	if (!data)
+	if (!data && set == 1)
 	{
 		if (!(data = (t_data *)malloc(sizeof(t_data))))
-			ft_error("init_data: memory allocation failed");
+			ft_error(ERROR(SH, E_MEMALLOC), "(initializing data)", 'y');
 		data->error = -1;
-//		data->in_pipe = -1;
-//		data->out_pipe = -1;
 		data->offset = 0;
 		data->tmp_fdin = -1;
 		data->tmp_fdout = -1;
@@ -92,7 +85,7 @@ void			del_data(void)
 {
 	t_data	*data;
 
-	data = init_data();
+	data = init_data(0);
 	if (data)
 	{
 		del_fildes(&data->infildes);

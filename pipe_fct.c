@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 14:48:38 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/27 18:27:54 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/13 18:28:43 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ void			write_pipefile(void)
 {
 	char	*line;
 	t_data	*data;
-    t_fd	*tmp;
+	t_fd	*tmp;
 
-	data = init_data();
+	data = init_data(0);
 	tmp = data->infildes;
 	lseek(data->tmp_pipeout, data->offset, SEEK_SET);
 	while (tmp)
@@ -52,7 +52,10 @@ static void		pipe_left(t_node *tree, int *pipe_fd, t_data *data)
 		ft_strdel(&line);
 	}
 	remove_tmp("/.temp_pipein");
-	exit(EXIT_SUCCESS);
+	if (g_pid.built == 0 || WEXITSTATUS(g_pid.id) != 0)
+		exit(EXIT_FAILURE);
+	else
+		exit(EXIT_SUCCESS);
 }
 
 static void		pipe_right(t_node *tree, int *pipe_fd, t_data *data)
@@ -78,7 +81,10 @@ static void		pipe_right(t_node *tree, int *pipe_fd, t_data *data)
 	update_offset(&data, offset);
 	read_tree(tree->right);
 	remove_tmp("/.temp_pipeout");
-	exit(EXIT_SUCCESS);
+	if (g_pid.built == 0 || WEXITSTATUS(g_pid.id) != 0)
+		exit(EXIT_FAILURE);
+	else
+		exit(EXIT_SUCCESS);
 }
 
 void			pipe_proc(t_node *tree)
@@ -87,10 +93,9 @@ void			pipe_proc(t_node *tree)
 	int		pipe_fd[2];
 	t_data	*data;
 
-
-	data = init_data();
+	data = init_data(0);
 	if (pipe(pipe_fd) == -1)
-		ft_putendl_fd("42sh: pipe_proc: call system pipe error", 2);
+		ft_error(ERROR(SH, E_CALLSYS), "pipe", 'n');
 	else
 	{
 		g_pid.child = fork();

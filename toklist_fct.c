@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 15:12:19 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/05/23 16:48:30 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/11 19:38:59 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ void	organize_toklist(t_node **tree, t_token **toklist, int pos, int prio)
 	}
 	else if (prio < 4)
 		organize_toklist(tree, toklist, pos, prio + 1);
-	else if (*toklist && (*toklist)->type && !ft_strcmp((*toklist)->type, "com"))
+	else if (*toklist && (*toklist)->type
+				&& !ft_strcmp((*toklist)->type, "com"))
 		add_node(tree, new_node("com", (*toklist)->word, pos));
 }
 

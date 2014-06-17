@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/23 14:56:23 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/04 19:45:10 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/13 16:47:54 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,11 @@ void			del_av(char **av)
 
 static void		launch_process(t_node **tree, t_token **toklist)
 {
-//	write(1, "\n", 1);
 	organize_toklist(tree, toklist, 1, 0);
-	print_tree(*tree, 1);
-//	read_tree(*tree);
+//	print_tree(*tree, 1);
+	apply_term(-1);
+	read_tree(*tree);
+	apply_term(1);
 	del_tree(tree);
 	init_pid();
 }
@@ -58,7 +59,7 @@ void			apply_return(void)
 
 	tree = NULL;
 	toklist = NULL;
-	historic = init_historic();
+	historic = init_historic(0);
 	trim = ft_strtrim((*historic)->copy->line);
 	write(1, "\n", 1);
 	if (trim && *trim)
@@ -66,7 +67,7 @@ void			apply_return(void)
 		(*historic)->list = add_to_list((*historic)->list,
 										(*historic)->copy->line);
 		create_toklist(&toklist, trim);
-		if (parse_toklist(toklist))
+		if (!parse_toklist(toklist))
 			launch_process(&tree, &toklist);
 		del_toklist(&toklist);
 		del_copy(&((*historic)->copy));
