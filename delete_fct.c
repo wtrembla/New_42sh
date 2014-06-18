@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/03 20:00:33 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/11 19:34:56 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/18 19:52:36 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void			apply_delete(void)
 			tputs(tgetstr("le", NULL), 1, aff_c);
 		tputs(tgetstr("dc", NULL), 1, aff_c);
 		(*historic)->copy->index -= 1;
-		(*historic)->copy->size -= ft_strlen((*historic)->copy->line);
+		(*historic)->copy->size = ft_strlen((*historic)->copy->line);
 		display_line();
 	}
 }

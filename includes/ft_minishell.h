@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/22 13:56:53 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/17 18:05:13 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/18 19:18:52 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 /*
 ** define
 */
-# define BUILT_NUM 5
+# define BUILT_NUM 6
 # define KEY_NUM 14
 # define OPE_NUM 7
 
@@ -166,6 +166,11 @@ void					clear_aff(void);
 ** built_cd.c
 */
 void					apply_cd(char *command);
+
+/*
+** built_echo.c
+*/
+void					apply_echo(char *command);
 
 /*
 ** built_env.c
@@ -314,6 +319,11 @@ t_ope					*init_opetab(int set);
 int						parse_cd(char **av);
 void					set_flag(t_env **env, int set);
 void					set_option(t_env **env);
+
+/*
+** opt_echo.c
+*/
+char					**parse_echo(char **av, int *n, int *e, int *em);
 
 /*
 ** or_fct.c

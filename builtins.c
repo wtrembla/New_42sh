@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/23 18:26:55 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/06 20:22:40 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/18 19:20:11 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,11 @@ t_built			*init_builtin(int set)
 		if (!(builtin = (t_built *)malloc(sizeof(t_built) * BUILT_NUM)))
 			ft_error(ERROR(SH, E_MEMALLOC), "(initializing builtins)", 'y');
 		builtin[0] = init_built("cd", &apply_cd);
-		builtin[1] = init_built("env", &apply_env);
-		builtin[2] = init_built("exit", &apply_exit);
-		builtin[3] = init_built("setenv", &apply_setenv);
-		builtin[4] = init_built("unsetenv", &apply_unsetenv);
+		builtin[1] = init_built("echo", &apply_echo);
+		builtin[2] = init_built("env", &apply_env);
+		builtin[3] = init_built("exit", &apply_exit);
+		builtin[4] = init_built("setenv", &apply_setenv);
+		builtin[5] = init_built("unsetenv", &apply_unsetenv);
 	}
 	return (builtin);
 }

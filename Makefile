@@ -6,7 +6,7 @@
 #    By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2013/12/13 18:51:49 by wtrembla          #+#    #+#              #
-#    Updated: 2014/06/17 17:07:32 by wtrembla         ###   ########.fr        #
+#    Updated: 2014/06/18 18:33:07 by wtrembla         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -18,6 +18,7 @@ SRCS		=	aff_fct.c				\
 				arrow_fct1.c			\
 				arrow_fct2.c			\
 				built_cd.c				\
+				built_echo.c			\
 				built_env.c				\
 				built_exit.c			\
 				built_setenv.c			\
@@ -43,6 +44,7 @@ SRCS		=	aff_fct.c				\
 				move_fct3.c				\
 				operand_fct.c			\
 				opt_cd.c				\
+				opt_echo.c				\
 				or_fct.c				\
 				path_fct.c				\
 				parser_fct.c			\
