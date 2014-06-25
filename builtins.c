@@ -6,10 +6,11 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/23 18:26:55 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/18 19:20:11 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 17:03:15 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <fcntl.h>
 #include "ft_minishell.h"
 
 static t_built	init_built(char *name, void *apply_built)
@@ -45,16 +46,19 @@ int				check_builtin(char *command)
 	int		i;
 	int		ret;
 	t_built	*builtin;
+	t_data	*data;
 
 	i = 0;
 	ret = 0;
 	av = ft_strsplit(command, ' ');
 	builtin = init_builtin(0);
+	data = init_data(0);
 	while (i < BUILT_NUM)
 	{
 		if (!ft_strcmp(av[0], builtin[i].name))
 		{
 			builtin[i].apply_built(command);
+			update_data(&data);
 			ret = 1;
 		}
 		i++;

@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/23 15:47:16 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/11 17:58:00 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 17:10:58 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,22 +54,13 @@ char			*check_command(char *command)
 
 static void		run_command(char **av, t_data *data)
 {
-	t_fd	*tmp;
-
 	if (data->tmp_pipein != -1)
 		exec_command(av, data->tmp_pipein);
 	if (data->tmp_fdout != -1)
 	{
 		exec_command(av, data->tmp_fdout);
 		if (data->outfildes)
-		{
-			tmp = data->outfildes;
-			while (tmp)
-			{
-				write_redirfile(tmp->fildes);
-				tmp = tmp->next;
-			}
-		}
+			write_redirfile();
 	}
 	else if (data->tmp_pipein == -1)
 		exec_command(av, 1);

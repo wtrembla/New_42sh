@@ -6,19 +6,19 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/03 20:22:02 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/11 19:32:04 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 17:19:40 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-int     aff_c(int c)
+int		aff_c(int c)
 {
 	write(0, &c, 1);
 	return (0);
 }
 
-int     aff_str(char *str)
+int		aff_str(char *str)
 {
 	ft_putstr_fd(str, 0);
 	return (0);

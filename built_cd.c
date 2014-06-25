@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/24 15:29:45 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/17 18:44:21 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 17:22:02 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void		update_env(t_env **env, char *dir)
 	ft_strdel(&(*env)->oldpwd);
 	(*env)->oldpwd = (*env)->pwd;
 	new_dir = ft_strdup(getcwd(buf, 2048));
-	if ((*env)->optP == 0 && ft_strstr(new_dir, dir))
+	if ((*env)->optp == 0 && ft_strstr(new_dir, dir))
 		(*env)->pwd = ft_strdup(ft_strstr(new_dir, dir));
 	else
 		(*env)->pwd = ft_strdup(new_dir);
@@ -58,8 +58,6 @@ static void		update_env(t_env **env, char *dir)
 static void		cd_proc(t_env *env, char *new_dir, char *av)
 {
 	int		ret;
-
-	printf("new_dir = %s\n", new_dir);
 
 	if (new_dir && !(ret = check_path(new_dir)) && !chdir(new_dir))
 	{

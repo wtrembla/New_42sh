@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/06 18:19:42 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/13 16:25:06 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 14:58:04 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,14 @@
 # define ERROR(A, B) EXPAND(A, B)
 # define SH 42sh:\040
 # define CD cd:\040
+# define ENV env:\040
 # define EXIT exit:\040
 # define SETENV setenv:\040
 # define UNSETENV unsetenv:\040
 # define E_CALLSYS call system error:\040
 # define E_CLOSE close error:\040
 # define E_CREATETMP temporary file not created\n
+# define E_ILLEGALOPT illegal option --\040
 # define E_IMPENV improper environment\n
 # define E_ISDIR is a directory:\040
 # define E_FEWARGS too few arguments\n

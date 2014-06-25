@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/22 13:56:53 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/18 19:18:52 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 17:21:17 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 ** define
 */
 # define BUILT_NUM 6
-# define KEY_NUM 14
+# define KEY_NUM 13
 # define OPE_NUM 7
 
 /*
@@ -77,8 +77,8 @@ typedef struct			s_env
 	char				*pwd;
 	char				*oldpwd;
 	char				*home;
-	int					flagP;
-	int					optP;
+	int					flagp;
+	int					optp;
 }						t_env;
 
 typedef struct			s_hist
@@ -264,8 +264,9 @@ char					**ft_split(char *str);
 ** historic_fct.c
 */
 char					**add_to_list(char **list, char *line);
-t_hist					**init_historic(int set);
 void					del_historic(void);
+t_hist					**init_historic(int set);
+void					update_historic(void);
 
 /*
 ** lexer_fct.c
@@ -326,6 +327,13 @@ void					set_option(t_env **env);
 char					**parse_echo(char **av, int *n, int *e, int *em);
 
 /*
+** opt_env.c
+*/
+char					**change_var(char **var);
+void					empty_env(t_env **env);
+char					**parse_env(char **av, int *i);
+
+/*
 ** or_fct.c
 */
 void					or_proc(t_node *tree);
@@ -367,7 +375,7 @@ void					write_redilfile(void);
 */
 void					add_outfildes(t_fd **outfildes, char *file, int fd);
 void					redir_proc(t_node *tree);
-void					write_redirfile(int fd);
+void					write_redirfile(void);
 
 /*
 ** redirr_fct.c

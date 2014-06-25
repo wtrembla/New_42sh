@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/24 16:29:08 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/11 18:35:54 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 18:23:02 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	apply_exit(char *command)
 	}
 	else if (size == 1 && av[1])
 		ret = ft_atoi(av[1]);
+//	update_historic();
 	del_builtin();
 	del_env();
 	del_opetab();

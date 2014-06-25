@@ -6,11 +6,32 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/17 19:10:29 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/18 19:54:39 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 19:51:33 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
+
+static void	put_unprintchar(char *str, int e, int em)
+{
+	if ((!em || (em && e)) && *(str + 1) == 't')
+		ft_putchar('\t');
+	else if ((!em || (em && e)) && *(str + 1) == 'v')
+		ft_putchar('\v');
+	else if ((!em || (em && e)) && *(str + 1) == 'n')
+		ft_putchar('\n');
+	else if ((!em || (em && e)) && *(str + 1) == 'e')
+		ft_putchar('\e');
+	else if ((!em || (em && e)) && *(str + 1) == 'b')
+		ft_putchar('\b');
+	else if ((!em || (em && e)) && *(str + 1) == 'f')
+		ft_putchar('\f');
+	else
+	{
+		ft_putchar(*str);
+		ft_putchar(*(str + 1));
+	}
+}
 
 static char	*print_unprintable(char *str, char fin, int e, int em)
 {
@@ -18,23 +39,7 @@ static char	*print_unprintable(char *str, char fin, int e, int em)
 	{
 		if (*str == '\\' && *(str + 1))
 		{
-			if ((!em || (em && e)) && *(str + 1) == 't')
-				ft_putchar('\t');
-			else if ((!em || (em && e)) && *(str + 1) == 'v')
-				ft_putchar('\v');
-			else if ((!em || (em && e)) && *(str + 1) == 'n')
-				ft_putchar('\n');
-			else if ((!em || (em && e)) && *(str + 1) == 'e')
-				ft_putchar('\e');
-			else if ((!em || (em && e)) && *(str + 1) == 'b')
-				ft_putchar('\b');
-			else if ((!em || (em && e)) && *(str + 1) == 'f')
-				ft_putchar('\f');
-			else
-			{
-				ft_putchar(*str);
-				ft_putchar(*(str + 1));
-			}
+			put_unprintchar(str, e, em);
 			str += 2;
 		}
 		else

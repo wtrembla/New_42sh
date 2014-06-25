@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/22 13:56:17 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/17 17:31:01 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 18:17:17 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ t_env		*init_env(char **environ, int set)
 		env->pwd = copy_pwd(environ);
 		env->oldpwd = copy_oldpwd(environ);
 		env->home = copy_home(environ);
-		env->optP = 0;
+		env->flagp = 0;
+		env->optp = 0;
 	}
 	return (env);
 }

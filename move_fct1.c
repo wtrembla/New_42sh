@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/04 20:06:58 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/11 19:36:09 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 19:14:46 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@ static void		cursor_left(int move, int index)
 	struct winsize	size;
 
 	i = 0;
+	ioctl(0, TIOCGWINSZ, &size);
 	while (i < move)
 	{
 		if (check_beginning(index - i - 1))
 		{
 			tputs(tgetstr("up", NULL), 1, aff_c);
-			tputs(tgoto(tgetstr("ch", NULL), 0, size.ws_col), 1, aff_c);
+			tputs(tgoto(tgetstr("ch", NULL), 0, size.ws_col - 1), 1, aff_c);
 		}
 		else
 			tputs(tgetstr("le", NULL), 1, aff_c);

@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/17 15:18:10 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/17 18:18:38 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 17:22:37 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,20 @@
 
 void			set_option(t_env **env)
 {
-	if ((*env)->flagP == 1)
-		(*env)->optP = 1;
-	else if ((*env)->flagP == -1)
-		(*env)->optP = 0;
+	if ((*env)->flagp == 1)
+		(*env)->optp = 1;
+	else if ((*env)->flagp == -1)
+		(*env)->optp = 0;
 }
 
 void			set_flag(t_env **env, int set)
 {
 	if (set == 1)
-		(*env)->flagP = 1;
+		(*env)->flagp = 1;
 	else if (set == -1)
-		(*env)->flagP = -1;
+		(*env)->flagp = -1;
 	else if (set == 0)
-		(*env)->flagP = 0;
+		(*env)->flagp = 0;
 }
 
 int				parse_cd(char **av)

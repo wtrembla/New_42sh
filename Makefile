@@ -6,7 +6,7 @@
 #    By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2013/12/13 18:51:49 by wtrembla          #+#    #+#              #
-#    Updated: 2014/06/18 18:33:07 by wtrembla         ###   ########.fr        #
+#    Updated: 2014/06/25 16:11:47 by wtrembla         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -45,6 +45,7 @@ SRCS		=	aff_fct.c				\
 				operand_fct.c			\
 				opt_cd.c				\
 				opt_echo.c				\
+				opt_env.c				\
 				or_fct.c				\
 				path_fct.c				\
 				parser_fct.c			\

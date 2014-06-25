@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/15 20:01:14 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/13 18:58:20 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 17:12:05 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,23 @@ static int		check_file(char *file)
 	return (fd);
 }
 
-void			write_redirfile(int fd)
+void			write_redirfile(void)
 {
 	char	*line;
 	t_data	*data;
+	t_fd	*tmp;
 
 	data = init_data(0);
-	lseek(data->tmp_fdout, 0, SEEK_SET);
-	while (get_next_line(data->tmp_fdout, &line) > 0)
+	tmp = data->outfildes;
+	while (tmp)
 	{
-		ft_putendl_fd(line, fd);
-		ft_strdel(&line);
+		lseek(data->tmp_fdout, 0, SEEK_SET);
+		while (get_next_line(data->tmp_fdout, &line) > 0)
+		{
+			ft_putendl_fd(line, tmp->fildes);
+			ft_strdel(&line);
+		}
+		tmp = tmp->next;
 	}
 }
 

@@ -6,11 +6,34 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/06/03 20:00:33 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/18 19:52:36 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 18:11:38 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
+
+static char		*delete_char(char *update, char *line, int index)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	while (line && line[i] && i < index)
+	{
+		update[i] = line[i];
+		i++;
+	}
+	j = i;
+	i++;
+	while (line && line[i])
+	{
+		update[j] = line[i];
+		i++;
+		j++;
+	}
+	update[j] = '\0';
+	return (update);
+}
 
 void			display_line(void)
 {
@@ -26,29 +49,11 @@ void			display_line(void)
 static char		*update_line(char *line, int index)
 {
 	char	*update;
-	int		i;
-	int		j;
 
-	i = 0;
 	if (!(update = (char *)malloc(sizeof(char) * ft_strlen(line))))
 		return (update);
 	else
-	{
-		while (line && line[i] && i < index)
-		{
-			update[i] = line[i];
-			i++;
-		}
-		j = i;
-		i++;
-		while (line && line[i])
-		{
-			update[j] = line[i];
-			i++;
-			j++;
-		}
-		update[j] = '\0';
-	}
+		update = delete_char(update, line, index);
 	ft_strdel(&line);
 	return (update);
 }

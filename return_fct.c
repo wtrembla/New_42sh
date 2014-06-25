@@ -6,7 +6,7 @@
 /*   By: wtrembla <wtrembla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/04/23 14:56:23 by wtrembla          #+#    #+#             */
-/*   Updated: 2014/06/13 16:47:54 by wtrembla         ###   ########.fr       */
+/*   Updated: 2014/06/25 16:57:56 by wtrembla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void			apply_return(void)
 	toklist = NULL;
 	historic = init_historic(0);
 	trim = ft_strtrim((*historic)->copy->line);
-	write(1, "\n", 1);
 	if (trim && *trim)
 	{
 		(*historic)->list = add_to_list((*historic)->list,
@@ -75,5 +74,4 @@ void			apply_return(void)
 	}
 	else
 		ft_strdel(&trim);
-	display_prompt();
 }
